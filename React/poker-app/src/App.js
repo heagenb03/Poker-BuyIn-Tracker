@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect, use} from 'react';
+import api from './api';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = () => {
+  const [buyin, setBuyin] = useState([]);
+  const [formData, setFormData] = useState({
+    name: '',
+    buyin: '',
+    cashout: '',
+  });
+
+  const fetchBuyin = async () => {
+    const response = await api.get('/buy_ins/');
+    setBuyin(response.data);
+  };
+
+  useEffect(() => {
+    fetchBuyin();
+  }, []);
+
+  const handleChange = (event) => {
+    const value = event.target.value;
+    setFormData({
+      ...formData,
+      [event.target.name]: value,
+    });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    await api.post('/buy_ins/', formData);
+  };
+
+
 }
 
 export default App;
